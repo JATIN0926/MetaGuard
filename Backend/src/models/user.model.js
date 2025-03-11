@@ -1,16 +1,20 @@
-const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
+import mongoose from "mongoose";
+import bcryptjs from "bcryptjs";
 
 const UserSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true },
+    username: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    files: [{ type: mongoose.Schema.Types.ObjectId, ref: "File" }], 
+    profilePicture: {
+      type: String,
+      default:
+        "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
+    },
+    files: [{ type: mongoose.Schema.Types.ObjectId, ref: "File" }],
   },
   { timestamps: true }
 );
-
 
 UserSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
@@ -19,4 +23,5 @@ UserSchema.pre("save", async function (next) {
   next();
 });
 
-module.exports = mongoose.model("User", UserSchema);
+const User = mongoose.model("User", UserSchema);
+export default User;
