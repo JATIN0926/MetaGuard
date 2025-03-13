@@ -23,6 +23,11 @@
     color: var(--text-light);
     line-height: 1.6;
   }
+  html, body {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
   
   .homepage-container {
     width: 100%;
