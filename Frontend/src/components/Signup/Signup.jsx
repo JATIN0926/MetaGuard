@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import toast from "react-hot-toast"
 import "./Signup.css";
-
 const Signup = () => {
   const [isChecked, setIsChecked] = useState(false);
 
@@ -35,12 +36,12 @@ const Signup = () => {
             />
             <label htmlFor="terms">I agree to the <a href="#">terms & conditions</a></label>
           </div>
-          <button type="submit" className="signup-btn" disabled={!isChecked}>
+          <button type="submit" className="signup-btn">
             Sign Up
           </button>
         </form>
         <p className="login-link">
-          Already have an account? <a href="#">Login</a>
+          Already have an account? <Link to={`/login`}>Login</Link>
         </p>
         <div className="social-icons">
           <i className='bx bxl-google'></i>
