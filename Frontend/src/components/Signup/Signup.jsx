@@ -36,7 +36,7 @@ const Signup = () => {
     try {
       setLoading(true);
       toast.loading("Signing up...");
-      const { data } = await axios.post("/api/user/signup", { username, email, password });
+      const { data } = await axios.post("/api/auth/signup", { username, email, password });
 
       toast.dismiss();
       toast.success("Signup successful!");

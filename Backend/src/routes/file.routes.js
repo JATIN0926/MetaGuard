@@ -1,14 +1,10 @@
 import express from "express";
-import { uploadFile, getUserFiles } from "../controllers/file.controller.js";
-import multer from "multer";
+import { uploadFile } from "../controllers/file.controller.js";
 import { verifyToken } from "../middlewares/auth.middleware.js"; 
 
 const router = express.Router();
 
-const upload = multer(); // Middleware for handling multipart form data
-
 // Routes
-router.post("/upload", verifyToken, upload.single("file"), uploadFile);
-router.get("/", verifyToken, getUserFiles);
+router.post("/upload", verifyToken, uploadFile);  // No need for multer here
 
 export default router;

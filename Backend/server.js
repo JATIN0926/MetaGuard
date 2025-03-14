@@ -1,7 +1,7 @@
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
-import UserRoutes from "./src/routes/auth.routes.js"; 
+import AuthRoutes from "./src/routes/auth.routes.js"; 
 import FileRoutes from "./src/routes/file.routes.js";
 import connectDB from "./src/config/db.js"
 const app = express();
@@ -15,7 +15,7 @@ app.get("/", (req, res) => {
   res.send("MetaGuard API is running...");
 });
 
-app.use("/api/user", UserRoutes);  
+app.use("/api/auth", AuthRoutes);  
 app.use("/api/files", FileRoutes);
 
 // Start Server

@@ -3,11 +3,14 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import "./Login.css";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { app } from "../../firebase.js";
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const auth = getAuth(app);
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -23,7 +26,7 @@ const Login = () => {
     try {
       setLoading(true);
       toast.loading("Logging in...");
-      const { data } = await axios.post("/api/user/login", { email, password });
+      const { data } = await axios.post("/api/auth/login", { email, password });
 
       toast.dismiss();
       toast.success("Login successful!");
@@ -33,6 +36,32 @@ const Login = () => {
       toast.error(error.response?.data?.message || "Login failed");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleGoogleClick = async () => {
+    const provider = new GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: "select_account" });
+
+    try {
+      const resultsFromGoogle = await signInWithPopup(auth, provider);
+      const { data } = await axios.post("/api/auth/google", {
+        name: resultsFromGoogle.user.displayName,
+        email: resultsFromGoogle.user.email,
+        photoURL: resultsFromGoogle.user.photoURL,
+      });
+
+      console.log("data", data);
+
+      if (data.success) {
+        toast.success("Login Successful!");
+        navigate("/");
+      }
+      else{
+        toast.error("Login Failed ! , Try again with a different method")
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -74,6 +103,7 @@ const Login = () => {
             src="/icons/google-symbol.png"
             alt="Google"
             className="social-icon"
+            onClick={handleGoogleClick}
           />
           <img src="/icons/github.png" alt="GitHub" className="social-icon" />
         </div>
