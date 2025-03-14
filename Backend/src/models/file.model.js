@@ -7,6 +7,9 @@ const FileSchema = new mongoose.Schema(
     s3Url: { type: String, required: true },
     encrypted: { type: Boolean, default: false },
     passwordProtected: { type: Boolean, default: false },
+    sanitized: { type: Boolean, default: false },
+    sanitizedS3Url: { type: String, default: null },
+    sanitizedMetadata: { type: [String], default: [] },
   },
   { timestamps: true }
 );

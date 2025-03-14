@@ -103,6 +103,7 @@ p {
 .social-icons {
   display: flex;
   justify-content: center;
+  align-items: center;
   gap: 1rem;
   margin-top: 1.25rem;
 }
@@ -113,7 +114,10 @@ p {
   cursor: pointer;
   transition: 0.3s;
 }
-
+.google{
+  width: 1.7rem !important;
+  height: 1.7rem !important;
+}
 .social-icons img:hover {
   transform: scale(1.1);
 }

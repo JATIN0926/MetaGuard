@@ -21,6 +21,7 @@
     width: 100%;
     background: url('/images/back.jpg') no-repeat center center/cover;
     backdrop-filter: blur(0.5rem);
+    overflow-y:hidden ;
   }
   
   /* Blurred Black Transparent Sign-Up Box */
@@ -140,7 +141,10 @@
     gap: 1rem;
     margin-top: 1.25rem;
   }
-  
+  .google{
+    width: 1.7rem !important;
+    height: 1.7rem !important;
+  }
   .social-icons i {
     font-size: 1.875rem;
     color: #fff;

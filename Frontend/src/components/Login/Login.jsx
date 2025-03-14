@@ -3,7 +3,11 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import "./Login.css";
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+} from "firebase/auth";
 import { app } from "../../firebase.js";
 
 const Login = () => {
@@ -56,13 +60,16 @@ const Login = () => {
       if (data.success) {
         toast.success("Login Successful!");
         navigate("/");
-      }
-      else{
-        toast.error("Login Failed ! , Try again with a different method")
+      } else {
+        toast.error("Login Failed ! , Try again with a different method");
       }
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handleGithubClick = () => {
+    window.location.href = `${import.meta.env.VITE_API_BASE_URL}/api/auth/github`;
   };
 
   return (
@@ -102,10 +109,15 @@ const Login = () => {
           <img
             src="/icons/google-symbol.png"
             alt="Google"
-            className="social-icon"
+            className="social-icon google"
             onClick={handleGoogleClick}
           />
-          <img src="/icons/github.png" alt="GitHub" className="social-icon" />
+          <img
+            src="/icons/github.png"
+            alt="GitHub"
+            className="social-icon"
+            onClick={handleGithubClick}
+          />
         </div>
       </div>
     </div>
