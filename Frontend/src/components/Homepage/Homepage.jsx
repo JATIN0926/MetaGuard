@@ -1,5 +1,6 @@
 import React from 'react';
 import './Homepage.css';
+import { Link } from 'react-router-dom';
 
 const Homepage = () => {
   return (
@@ -22,7 +23,7 @@ const Homepage = () => {
         <div className="hero-content">
           <h1>Secure Your Metadata</h1>
           <p>Advanced solutions for metadata cleaning, organization, and protection</p>
-          <button className="cta-button">Sanitize your data</button>
+         <Link to={`/fileupload`}> <button className="cta-button">Sanitize your data</button></Link>
         </div>
       </section>
 
