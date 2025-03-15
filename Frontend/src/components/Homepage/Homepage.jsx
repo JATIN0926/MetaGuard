@@ -1,29 +1,21 @@
-import React from 'react';
-import './Homepage.css';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
+import Navbar from "./Navbar/Navbar";
+import Footer from "./Footer/Footer";
+import "./Homepage.css";
 
 const Homepage = () => {
   return (
     <div className="homepage-container">
-      <header className="header">
-        <div className="logo">
-          <h1>Meta Data Sanitization</h1>
-        </div>
-        <nav className="nav">
-          <ul>
-            <li><a href="#features">Features</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
-            <li><a href="/login" className="login-btn">Login</a></li>
-          </ul>
-        </nav>
-      </header>
+      <Navbar />
 
       <section className="hero-section">
         <div className="hero-content">
           <h1>Secure Your Metadata</h1>
           <p>Advanced solutions for metadata cleaning, organization, and protection</p>
-         <Link to={`/fileupload`}> <button className="cta-button">Sanitize your data</button></Link>
+          <Link to="/fileupload">
+            <button className="cta-button">Sanitize your data</button>
+          </Link>
         </div>
       </section>
 
@@ -51,48 +43,21 @@ const Homepage = () => {
             </div>
           </div>
         </div>
-        </section>
+      </section>
 
       <section className="description-section" id="about">
         <h2>About Our Service</h2>
         <div className="description-content">
           <p>
-            <strong>Meta Data Sanitization</strong> is the process of cleaning, organizing, and securing metadata to ensure accuracy, consistency, and privacy. It involves removing redundant, outdated, or sensitive information from metadata, making it more reliable and easier to manage. This process helps in improving data quality, ensuring compliance with data protection regulations, and reducing risks associated with data breaches.
+            <strong>Meta Data Sanitization</strong> is the process of cleaning, organizing, and securing metadata to ensure accuracy, consistency, and privacy.
           </p>
           <p>
-            Meta Data Sanitization is crucial for businesses that handle large volumes of data, as it enhances data usability and supports better decision-making. It is commonly used in industries like healthcare, finance, and retail to maintain data integrity and protect sensitive information. By sanitizing metadata, organizations can streamline data workflows, improve data governance, and enhance overall data security.
+            It involves removing redundant, outdated, or sensitive information from metadata, making it more reliable and easier to manage. This process helps in improving data quality, ensuring compliance with data protection regulations, and reducing risks associated with data breaches.
           </p>
         </div>
       </section>
 
-      <footer className="footer" id="contact">
-        <div className="footer-content">
-          <div className="footer-section">
-            <h3>Contact Us</h3>
-            <p>Email: info@metadatasanitization.com</p>
-            <p>Phone: +1 (555) 123-4567</p>
-          </div>
-          <div className="footer-section">
-            <h3>Quick Links</h3>
-            <ul>
-              <li><a href="#features">Features</a></li>
-              <li><a href="#about">About</a></li>
-              <li><a href="#privacy">Privacy Policy</a></li>
-              <li><a href="#terms">Terms of Service</a></li>
-            </ul>
-          </div>
-          <div className="footer-section">
-            <h3>Subscribe</h3>
-            <div className="subscribe-form">
-              <input type="email" placeholder="Your email address" />
-              <button>Subscribe</button>
-            </div>
-          </div>
-        </div>
-        <div className="copyright">
-          <p>&copy; 2025 Meta Data Sanitization. All rights reserved.</p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };

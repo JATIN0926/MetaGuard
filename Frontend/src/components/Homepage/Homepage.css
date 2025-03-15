@@ -59,6 +59,7 @@
   
   .nav ul li {
     margin-left: 2rem;
+    cursor: pointer;
   }
   
   .nav ul li a {
