@@ -1,6 +1,7 @@
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import AuthRoutes from "./src/routes/auth.routes.js"; 
 import FileRoutes from "./src/routes/file.routes.js";
 import connectDB from "./src/config/db.js"
@@ -8,6 +9,8 @@ const app = express();
 
 app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 connectDB();
 
