@@ -6,6 +6,7 @@ import Homepage from "./components/Homepage/Homepage";
 import { Toaster } from "react-hot-toast";
 import FileUpload from "./components/FileUpload/FileUpload";
 import AuthSuccess from "./components/AuthSuccess/AuthSuccess";
+import ProfilePage from "./components/ProfilePage/ProfilePage";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/fileUpload" element={<FileUpload />} />
           <Route path="/auth-success" element={<AuthSuccess />} />
+          <Route path="/profile" element={<ProfilePage />} />
         </Routes>
       </Router>
     </>

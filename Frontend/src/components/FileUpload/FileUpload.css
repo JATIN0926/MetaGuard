@@ -230,6 +230,111 @@ html, body {
   box-shadow: 0 10px 25px rgba(121, 40, 202, 0.5);
 }
 
+.fetch-metadata-button {
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color: var(--text-light);
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+  margin-top: 1rem;
+}
+
+.fetch-metadata-button:hover {
+  background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+  transform: scale(1.05);
+}
+
+.fetch-metadata-button:disabled {
+  background: rgba(121, 40, 202, 0.3);
+  cursor: not-allowed;
+}
+
+.metadata-container {
+  background-color: var(--background-card);
+  padding: 1.5rem;
+  border-radius: 10px;
+  margin-top: 2rem;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+
+.metadata-container h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.metadata-section {
+  background: rgba(30, 30, 30, 0.7);
+  padding: 1rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.metadata-section h3 {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-light);
+}
+
+
+.metadata-section pre {
+  background: rgba(18, 18, 18, 0.9);
+  padding: 0.8rem;
+  border-radius: 6px;
+  overflow-x: auto;
+  color: var(--text-light);
+  font-size: 0.95rem;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.metadata-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.metadata-list li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.metadata-list li:last-child {
+  border-bottom: none;
+}
+
+.metadata-list strong {
+  color: var(--primary-color);
+  margin-right: 0.5rem;
+}
+
+
+.upload-another-button {
+  background-color: #ff6600;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.upload-another-button:hover {
+  background-color: #e65c00;
+}
+
+
 /* Responsive design */
 @media (max-width: 768px) {
   .title-container h1 {

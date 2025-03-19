@@ -1,16 +1,26 @@
 import React, { useState, useRef } from "react";
-import { Link } from "react-router-dom";
+import Confetti from "react-confetti";
 import Navbar from "../Homepage/Navbar/Navbar";
-import Footer from "../Homepage/Footer/Footer";
-import toast from "react-hot-toast"; // ✅ Import toast
-import axios from "axios"; // ✅ Import axios
+import { useWindowSize } from "react-use";
+import toast from "react-hot-toast";
+import axios from "axios";
+import { validateFile } from "secure-file-validator";
 import "./FileUpload.css";
 
 const FileUpload = () => {
   const [files, setFiles] = useState([]);
   const [isDragging, setIsDragging] = useState(false);
-  const [uploading, setUploading] = useState(false); // ✅ Track upload state
+  const [uploading, setUploading] = useState(false);
+  const [sanitizedFileName, setSanitizedFileName] = useState("");
+
+  const [metadata, setMetadata] = useState(null);
+  const [loadingMetadata, setLoadingMetadata] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [btnText, setbtnText] = useState("Get Metadata");
+
   const fileInputRef = useRef(null);
+
+  const { width, height } = useWindowSize();
 
   const handleDragOver = (e) => {
     e.preventDefault();
@@ -20,34 +30,42 @@ const FileUpload = () => {
   const handleDragLeave = () => {
     setIsDragging(false);
   };
+  const handleFileInput = async (e) => {
+    if (e.target.files && e.target.files.length > 0) {
+      await handleFiles(e.target.files);
+    }
+  };
 
-  const handleDrop = (e) => {
+  const handleDrop = async (e) => {
     e.preventDefault();
     setIsDragging(false);
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      handleFiles(e.dataTransfer.files);
+      await handleFiles(e.dataTransfer.files);
     }
   };
 
-  const handleFileInput = (e) => {
-    if (e.target.files && e.target.files.length > 0) {
-      handleFiles(e.target.files);
+  const handleFiles = async (fileList) => {
+    const file = fileList[0]; // Process only one file
+
+    if (!file) return;
+
+    // ✅ Scan the file for malware
+    const isValid = await validateFile(file);
+
+    if (!isValid) {
+      toast.error(`🚨 Malicious file detected: ${file.name}`);
+      return; // Stop processing if the file is malicious
     }
-  };
 
-  const handleFiles = (fileList) => {
-    const newFiles = Array.from(fileList).map((file) => ({
-      file, // Store the file object itself
-      name: file.name,
-      size: (file.size / (1024 * 1024)).toFixed(2) + "MB",
-      id: Date.now() + Math.random().toString(36).substring(2, 15),
-    }));
-
-    // ✅ Limit to maximum 3 files
-    setFiles((prevFiles) => {
-      const updatedFiles = [...prevFiles, ...newFiles];
-      return updatedFiles.slice(0, 3);
-    });
+    // ✅ Store the valid file in state
+    setFiles([
+      {
+        file,
+        name: file.name,
+        size: (file.size / (1024 * 1024)).toFixed(2) + "MB",
+        id: Date.now(),
+      },
+    ]);
   };
 
   const handleBrowseClick = () => {
@@ -66,27 +84,28 @@ const FileUpload = () => {
 
     const formData = new FormData();
     files.forEach((fileObj) => {
-      formData.append("file", fileObj.file); 
+      formData.append("file", fileObj.file);
     });
 
     try {
       setUploading(true);
       toast.loading("Uploading files...", { id: "upload" });
 
-      const response = await axios.post(
-        `/api/files/upload`,
-        formData,
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const response = await axios.post(`/api/files/upload`, formData, {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       toast.dismiss("upload");
       toast.success("Files uploaded successfully!");
       console.log("Server Response:", response.data);
+
+      if (response.data.sanitizedFileName) {
+        setSanitizedFileName(response.data.sanitizedFileName);
+        console.log("sanitized file name", sanitizedFileName);
+      }
 
       setFiles([]); // ✅ Clear files after successful upload
     } catch (error) {
@@ -98,9 +117,62 @@ const FileUpload = () => {
     }
   };
 
+  const fetchMetadata = async () => {
+    if (!sanitizedFileName) {
+      toast.error("No sanitized file found.");
+      return;
+    }
+
+    try {
+      setLoadingMetadata(true);
+      toast.loading("Fetching metadata...", { id: "fetchMeta" });
+
+      const response = await axios.get(`/api/files/metadata`, {
+        params: { fileName: sanitizedFileName },
+        withCredentials: true,
+      });
+
+      toast.dismiss("fetchMeta");
+      if (response.data.malicious) {
+        toast.error("🚨 Malicious file detected! Metadata not found.");
+        return;
+      }
+
+      toast.success("Metadata fetched successfully!");
+      console.log("📂 Fetched Metadata Response:", response.data);
+
+      if (response.data.metadata) {
+        setMetadata(response.data);
+        setShowConfetti(true);
+        setTimeout(() => setShowConfetti(false), 7000);
+      } else {
+        toast.error("Metadata format incorrect!");
+      }
+    } catch (error) {
+      toast.dismiss("fetchMeta");
+      toast.error(error.response?.data?.message || "Failed to fetch metadata!");
+    } finally {
+      setLoadingMetadata(false);
+    }
+  };
+
+  const handleUploadAnother = () => {
+    setFiles([]); // ✅ Clear uploaded files
+    setSanitizedFileName(""); // ✅ Reset sanitized file name
+    setMetadata(null); // ✅ Clear metadata
+    setbtnText("Get Metadata"); // ✅ Reset button text
+
+    // ✅ Reset file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ""; // Clear file input
+      fileInputRef.current.click(); // Trigger file input
+    }
+  };
+
   return (
     <div className="homepage-container">
       <Navbar />
+      {showConfetti && <Confetti width={width} height={height} />}
 
       <section className="upload-section">
         <div className="upload-content">
@@ -188,11 +260,64 @@ const FileUpload = () => {
                 </button>
               </div>
             )}
+
+            {sanitizedFileName && (
+              <button
+                className="fetch-metadata-button"
+                onClick={fetchMetadata}
+                disabled={loadingMetadata}
+              >
+                {loadingMetadata ? "Fetching Metadata..." : `${btnText}`}
+              </button>
+            )}
+            {metadata && metadata.metadata && (
+              <div className="metadata-container">
+                <h2>Metadata Comparison</h2>
+
+                <div className="metadata-section">
+                  <h3>📌 Existing Metadata in uploaded file </h3>
+                  <ul className="metadata-list">
+                    {Object.entries(metadata.metadata.input_metadata).map(
+                      ([key, value]) => (
+                        <li key={key}>
+                          <strong>{key.replace("/", "")}:</strong> {value}
+                        </li>
+                      )
+                    )}
+                  </ul>
+                </div>
+
+                <div className="metadata-section">
+                  <h3>✅ Your Metadata is Sanitized </h3>
+                  <ul className="metadata-list">
+                    {Object.entries(metadata.metadata.output_metadata).map(
+                      ([key, value]) => (
+                        <li key={key}>
+                          <strong>{key.replace("/", "")}:</strong> {value}
+                        </li>
+                      )
+                    )}
+                  </ul>
+                  <h3>
+                    Download the sanitized file from here:{" "}
+                    <a href={metadata.metadata.sanitized_url} target="_blank">
+                      Download Now
+                    </a>
+                  </h3>
+                </div>
+
+                {/* ✅ Upload Another File Button */}
+                <button
+                  className="upload-another-button"
+                  onClick={handleUploadAnother}
+                >
+                  Upload Another File
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </section>
-
-      <Footer />
     </div>
   );
 };
