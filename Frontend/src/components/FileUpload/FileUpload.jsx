@@ -133,6 +133,7 @@ const FileUpload = () => {
       });
 
       toast.dismiss("fetchMeta");
+
       if (response.data.malicious) {
         toast.error("🚨 Malicious file detected! Metadata not found.");
         return;

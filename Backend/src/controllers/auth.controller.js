@@ -73,7 +73,7 @@ export const signOut = async (req, res, next) => {
     res
       .clearCookie("access_token")
       .status(200)
-      .json("User has been signed out");
+      .json({ message: "Signed out Successfully!" });
   } catch (error) {
     next(error);
   }
@@ -125,7 +125,6 @@ export const githubAuth = (req, res) => {
   const redirectUri = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&scope=user:email`;
   res.redirect(redirectUri);
 };
-
 
 export const githubCallback = async (req, res, next) => {
   const { code } = req.query;

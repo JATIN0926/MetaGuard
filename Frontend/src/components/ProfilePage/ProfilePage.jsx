@@ -1,48 +1,83 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import axios from "axios";
 import { Pencil, Check, Upload } from "lucide-react";
+import { UserContext } from "../../context/UserContext";
 import "./ProfilePage.css";
 
 const ProfilePage = () => {
+  const { user, setUser } = useContext(UserContext);
   const [activeTab, setActiveTab] = useState("profile");
-  const [isEditing, setIsEditing] = useState({ username: false, password: false });
-  const [userData, setUserData] = useState({
-    email: "user@example.com",
-    username: "JohnDoe",
-    password: "********",
+  const [isEditing, setIsEditing] = useState({
+    username: false,
+    password: false,
   });
 
-  const [files, setFiles] = useState([]);
+  console.log("user", user);
+  const [userData, setUserData] = useState({
+    email: user?.email || "user@example.com",
+    username: user?.username || "JohnDoe",
+    password: "*******",
+  });
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
 
   const handleEditClick = (field) => {
     setIsEditing({ ...isEditing, [field]: true });
   };
 
-  const handleSaveClick = () => {
-    setIsEditing({ username: false, password: false });
-  };
+  const handleSaveClick = async () => {
+    try {
+      setLoading(true);
+      setMessage("");
 
-  const handleFileUpload = (e) => {
-    const uploadedFiles = Array.from(e.target.files).map((file) => ({
-      name: file.name,
-      url: URL.createObjectURL(file),
-    }));
-    setFiles([...files, ...uploadedFiles]);
+      const updatedFields = {};
+      if (isEditing.username && userData.username !== user.username) {
+        updatedFields.username = userData.username;
+      }
+      if (isEditing.password && userData.password) {
+        updatedFields.password = userData.password;
+      }
+
+      if (Object.keys(updatedFields).length === 0) {
+        setLoading(false);
+        setIsEditing({ username: false, password: false });
+        return;
+      }
+
+      await axios.put("/api/users/edit", updatedFields, {
+        withCredentials: true,
+      });
+
+      // Refetch updated user data
+      const { data } = await axios.get("/api/users/me", {
+        withCredentials: true,
+      });
+      setUser(data);
+
+      setMessage("Profile updated successfully!");
+    } catch (error) {
+      setMessage(error.response?.data?.message || "Failed to update profile");
+    } finally {
+      setLoading(false);
+      setIsEditing({ username: false, password: false });
+      setUserData({ ...userData, password: "" }); // Reset password field
+    }
   };
 
   return (
     <div className="profile-container">
-      {/* Sidebar (Left) */}
       <div className="sidebar">
-        {/* User Icon and Username */}
         <div className="profile-header">
-          <img src="/icons/user.png" alt="User Icon" className="profile-icon" />
+          <img
+            src={user?.profilePicture || "/icons/user.png"}
+            alt="User Icon"
+            className="profile-icon"
+          />
           <h2 className="profile-username">{userData.username}</h2>
         </div>
 
-        {/* Border Line */}
         <div className="border-line"></div>
 
-        {/* Tabs */}
         <button
           className={`tab ${activeTab === "profile" ? "active" : ""}`}
           onClick={() => setActiveTab("profile")}
@@ -57,11 +92,11 @@ const ProfilePage = () => {
         </button>
       </div>
 
-      {/* Main Content (Right) */}
       <div className="main-content">
         {activeTab === "profile" && (
           <div className="profile-details">
-            {/* Email Field */}
+            {message && <p className="message">{message}</p>}
+
             <div className="field">
               <label>Email:</label>
               <div className="input-container">
@@ -69,67 +104,60 @@ const ProfilePage = () => {
               </div>
             </div>
 
-            {/* Username Field */}
             <div className="field">
               <label>Username:</label>
               <div className="input-container">
                 <input
                   type="text"
                   value={userData.username}
-                  onChange={(e) => setUserData({ ...userData, username: e.target.value })}
+                  onChange={(e) =>
+                    setUserData({ ...userData, username: e.target.value })
+                  }
                   readOnly={!isEditing.username}
                 />
                 {!isEditing.username ? (
-                  <Pencil className="edit-icon" onClick={() => handleEditClick("username")} />
+                  <Pencil
+                    className="edit-icon"
+                    onClick={() => handleEditClick("username")}
+                  />
                 ) : (
                   <Check className="save-icon" onClick={handleSaveClick} />
                 )}
               </div>
             </div>
 
-            {/* Password Field */}
             <div className="field">
               <label>Password:</label>
               <div className="input-container">
                 <input
                   type="password"
                   value={userData.password}
-                  onChange={(e) => setUserData({ ...userData, password: e.target.value })}
+                  onChange={(e) =>
+                    setUserData({ ...userData, password: e.target.value })
+                  }
                   readOnly={!isEditing.password}
+                  placeholder="Enter new password"
                 />
                 {!isEditing.password ? (
-                  <Pencil className="edit-icon" onClick={() => handleEditClick("password")} />
+                  <Pencil
+                    className="edit-icon"
+                    onClick={() => handleEditClick("password")}
+                  />
                 ) : (
                   <Check className="save-icon" onClick={handleSaveClick} />
                 )}
               </div>
             </div>
 
-            {/* Save Button (Conditional Rendering) */}
             {(isEditing.username || isEditing.password) && (
-              <button className="save-btn" onClick={handleSaveClick}>
-                Save Changes
+              <button
+                className="save-btn"
+                onClick={handleSaveClick}
+                disabled={loading}
+              >
+                {loading ? "Saving..." : "Save Changes"}
               </button>
             )}
-          </div>
-        )}
-
-        {activeTab === "files" && (
-          <div className="files-section">
-            <h2>Your Files</h2>
-            <div className="file-grid">
-              {files.map((file, index) => (
-                <div key={index} className="file-item">
-                  <img src={file.url} alt={file.name} />
-                  <p>{file.name}</p>
-                </div>
-              ))}
-            </div>
-            <label className="upload-btn">
-              <Upload />
-              Upload More Files
-              <input type="file" multiple onChange={handleFileUpload} hidden />
-            </label>
           </div>
         )}
       </div>

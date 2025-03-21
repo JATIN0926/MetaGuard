@@ -1,13 +1,10 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
+import { UserContext } from "../../context/UserContext"; 
 import "./Login.css";
-import {
-  getAuth,
-  GoogleAuthProvider,
-  signInWithPopup,
-} from "firebase/auth";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { app } from "../../firebase.js";
 
 const Login = () => {
@@ -15,6 +12,8 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const auth = getAuth(app);
+  const { login } = useContext(UserContext);
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -34,6 +33,9 @@ const Login = () => {
 
       toast.dismiss();
       toast.success("Login successful!");
+
+      login(data.user); // Save user in context and localStorage
+
       navigate("/");
     } catch (error) {
       toast.dismiss();
@@ -55,13 +57,12 @@ const Login = () => {
         photoURL: resultsFromGoogle.user.photoURL,
       });
 
-      console.log("data", data);
-
       if (data.success) {
         toast.success("Login Successful!");
+        login(data.user); // Save user in context and localStorage
         navigate("/");
       } else {
-        toast.error("Login Failed ! , Try again with a different method");
+        toast.error("Login Failed! Try again with a different method");
       }
     } catch (error) {
       console.log(error);
