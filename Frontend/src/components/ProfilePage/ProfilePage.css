@@ -281,7 +281,7 @@
   }
   
   .files-section h2 {
-    font-size: 2rem;
+    font-size: 2.5rem;
     margin-bottom: 1.5rem;
     color: var(--text-light);
     text-align: center;
@@ -291,50 +291,11 @@
   .file-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Adjusted for better responsiveness */
-    gap: 1rem;
-    padding-bottom: 1rem;
+    gap: 1.5rem;
+    padding-bottom: 2rem;
     justify-items: center;
-  }
-  
-  /* Individual File Item */
-  .file-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background: var(--background-card);
-    border-radius: 0.5rem;
-    padding: 1rem;
-    width: 100%;
-    max-width: 250px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    text-align: center;
-  }
-  
-  .file-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-  }
-  
-  /* Image Styling */
-  .file-item img {
-    width: 100%;
-    max-height: 150px;
-    border-radius: 0.5rem;
-    object-fit: cover; /* Ensures image fits without stretching */
-    transition: transform 0.3s ease;
-  }
-  
-  .file-item img:hover {
-    transform: scale(1.05);
-  }
-  
-  /* File Name */
-  .file-item p {
-    font-size: 1rem;
-    color: var(--text-light);
-    margin-top: 0.5rem;
-    word-break: break-word; /* Prevents text overflow */
-  }
+  }  
+
   
   /* Upload Button */
   .upload-btn {
@@ -357,3 +318,125 @@
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
   }
   
+  .file-item-profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    background: var(--background-card);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    width: 100%;
+    max-width: 250px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-align: center;
+    cursor: pointer;
+  }
+  
+  .file-item-profile:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* Image Styling */
+  .file-item-profile img {
+    width: 100%;
+    max-height: 150px;
+    border-radius: 0.5rem;
+    object-fit: cover; /* Ensures image fits without stretching */
+    transition: transform 0.3s ease;
+  }
+  
+  .file-item-profile img:hover {
+    transform: scale(1.05);
+  }
+  .file-item-profile p{
+    font-size: 1rem;
+    font-weight: 600;
+  }
+  .password-input {
+    width: 50%;
+    padding: 8px;
+    margin-top: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    align-self: center;
+  }
+  
+  /* Password Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: var(--background-card);
+  padding: 2rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  width: 100%;
+  max-width: 400px;
+}
+
+.modal-content h3 {
+  color: var(--text-light);
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.modal-content .password-input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: var(--background-dark);
+  color: var(--text-light);
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.modal-content .password-input:focus {
+  border-color: var(--primary-color);
+  outline: none;
+}
+
+.modal-content button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.modal-content button:first-of-type {
+  background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+  color: white;
+}
+
+.modal-content button:first-of-type:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.modal-content button:last-of-type {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-muted);
+}
+
+.modal-content button:last-of-type:hover {
+  background: rgba(255, 255, 255, 0.2);
+}

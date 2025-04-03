@@ -154,6 +154,7 @@ html, body {
 .file-item {
   display: flex;
   align-items: center;
+  /* width: 10rem; */
   background-color: rgba(30, 30, 30, 0.7);
   border-radius: 8px;
   padding: 0.8rem; /* Reduced from 1rem */
@@ -174,7 +175,7 @@ html, body {
 }
 
 .file-details {
-  flex-grow: 1;
+  flex-grow: 2;
   display: flex;
   flex-direction: column;
 }

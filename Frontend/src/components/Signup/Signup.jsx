@@ -17,7 +17,6 @@ const Signup = () => {
     password: "",
     confirmPassword: "",
   });
-  const [isChecked, setIsChecked] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const auth = getAuth(app);
@@ -36,10 +35,6 @@ const Signup = () => {
     if (password !== confirmPassword) {
       return toast.error("Passwords do not match");
     }
-    if (!isChecked) {
-      return toast.error("You must agree to the terms & conditions");
-    }
-
     try {
       setLoading(true);
       toast.loading("Signing up...");
@@ -137,17 +132,7 @@ const Signup = () => {
               required
             />
           </div>
-          <div className="checkbox-group">
-            <input
-              type="checkbox"
-              id="terms"
-              checked={isChecked}
-              onChange={() => setIsChecked(!isChecked)}
-            />
-            <label htmlFor="terms">
-              I agree to the <a href="#">terms & conditions</a>
-            </label>
-          </div>
+
           <button type="submit" className="signup-btn" disabled={loading}>
             {loading ? "Signing up..." : "Sign Up"}
           </button>

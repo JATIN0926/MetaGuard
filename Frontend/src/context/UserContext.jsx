@@ -46,7 +46,7 @@ export const UserProvider = ({ children }) => {
       toast.success("Logged out successfully");
 
       setUser(null);
-      setLoggedOut(true); // Prevent further API calls
+      setLoggedOut(true); 
       setLoading(false);
     } catch (error) {
       console.error("Logout failed:", error);
@@ -54,7 +54,7 @@ export const UserProvider = ({ children }) => {
   };
 
   return (
-    <UserContext.Provider value={{ user, login, logout, loading }}>
+    <UserContext.Provider value={{ user, setUser, login, logout, loading }}>
       {!loading && children}
     </UserContext.Provider>
   );

@@ -8,6 +8,7 @@ const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID;
 const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
 const FRONTEND_URL = process.env.FRONTEND_URL;
 
+
 export const signup = async (req, res, next) => {
   const { username, email, password } = req.body;
 

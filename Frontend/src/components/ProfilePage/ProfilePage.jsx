@@ -1,8 +1,10 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import axios from "axios";
-import { Pencil, Check, Upload } from "lucide-react";
+import { Pencil, Loader, Upload } from "lucide-react";
 import { UserContext } from "../../context/UserContext";
 import "./ProfilePage.css";
+import toast from "react-hot-toast";
+import FilesSection from "./FilesSection";
 
 const ProfilePage = () => {
   const { user, setUser } = useContext(UserContext);
@@ -12,7 +14,7 @@ const ProfilePage = () => {
     password: false,
   });
 
-  console.log("user", user);
+  // console.log("user", user);
   const [userData, setUserData] = useState({
     email: user?.email || "user@example.com",
     username: user?.username || "JohnDoe",
@@ -20,6 +22,8 @@ const ProfilePage = () => {
   });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [files, setFiles] = useState([]);
+
 
   const handleEditClick = (field) => {
     setIsEditing({ ...isEditing, [field]: true });
@@ -48,28 +52,43 @@ const ProfilePage = () => {
         withCredentials: true,
       });
 
-      // Refetch updated user data
-      const { data } = await axios.get("/api/users/me", {
-        withCredentials: true,
-      });
-      setUser(data);
-
-      setMessage("Profile updated successfully!");
+      // ✅ Correctly handle success messages
+      if (updatedFields.username && updatedFields.password) {
+        toast.success("Username and Password updated successfully!");
+      } else if (updatedFields.username) {
+        toast.success("Username updated successfully!");
+      } else if (updatedFields.password) {
+        toast.success("Password updated successfully!");
+      }
     } catch (error) {
-      setMessage(error.response?.data?.message || "Failed to update profile");
+      console.error("Profile update error:", error);
+      toast.error(error.response?.data?.message || "Failed to update profile");
     } finally {
       setLoading(false);
       setIsEditing({ username: false, password: false });
-      setUserData({ ...userData, password: "" }); // Reset password field
+      setUserData({ ...userData, password: "" });
     }
   };
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const { data } = await axios.get("/api/users/me", { withCredentials: true });
+        setUser(data);
+      } catch (error) {
+        console.error("Failed to fetch user data:", error);
+      }
+    };
+  
+    fetchUser();
+  }, []);
 
   return (
     <div className="profile-container">
       <div className="sidebar">
         <div className="profile-header">
           <img
-            src={user?.profilePicture || "/icons/user.png"}
+            src={user?.profilePicture}
             alt="User Icon"
             className="profile-icon"
           />
@@ -121,7 +140,7 @@ const ProfilePage = () => {
                     onClick={() => handleEditClick("username")}
                   />
                 ) : (
-                  <Check className="save-icon" onClick={handleSaveClick} />
+                  <Loader className="save-icon" onClick={handleSaveClick} />
                 )}
               </div>
             </div>
@@ -144,7 +163,7 @@ const ProfilePage = () => {
                     onClick={() => handleEditClick("password")}
                   />
                 ) : (
-                  <Check className="save-icon" onClick={handleSaveClick} />
+                  <Loader className="save-icon" onClick={handleSaveClick} />
                 )}
               </div>
             </div>
@@ -160,6 +179,7 @@ const ProfilePage = () => {
             )}
           </div>
         )}
+        {activeTab === "files" && <FilesSection files={files} setFiles={setFiles} />}
       </div>
     </div>
   );

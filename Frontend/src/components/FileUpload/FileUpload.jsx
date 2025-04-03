@@ -32,6 +32,9 @@ const FileUpload = () => {
   };
   const handleFileInput = async (e) => {
     if (e.target.files && e.target.files.length > 0) {
+      setSanitizedFileName(""); // ✅ Reset sanitized file name
+      setMetadata(null); // ✅ Clear metadata
+      setbtnText("Get Metadata"); // ✅ Reset button text
       await handleFiles(e.target.files);
     }
   };
